@@ -139,5 +139,44 @@ test('non-admin cannot restock', async () => {
 
   expect(res.status).toBe(403);
 });
+test('search sweets by name', async () => {
+  await request(app)
+    .post('/api/sweets')
+    .set('Authorization', `Bearer ${token}`)
+    .send({
+      name: 'Rasgulla',
+      category: 'Indian',
+      price: 10,
+      quantity: 5
+    });
+
+  const res = await request(app)
+    .get('/api/sweets/search?name=ras')
+    .set('Authorization', `Bearer ${token}`);
+
+  expect(res.status).toBe(200);
+  expect(res.body.length).toBe(1);
+  expect(res.body[0].name).toBe('Rasgulla');
+});
+
+test('search sweets by category and price range', async () => {
+  await request(app)
+    .post('/api/sweets')
+    .set('Authorization', `Bearer ${token}`)
+    .send({
+      name: 'Brownie',
+      category: 'Bakery',
+      price: 50,
+      quantity: 10
+    });
+
+  const res = await request(app)
+    .get('/api/sweets/search?category=Bakery&minPrice=40&maxPrice=60')
+    .set('Authorization', `Bearer ${token}`);
+
+  expect(res.status).toBe(200);
+  expect(res.body.length).toBe(1);
+  expect(res.body[0].category).toBe('Bakery');
+});
 
 

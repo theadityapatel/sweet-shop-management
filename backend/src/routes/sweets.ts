@@ -3,8 +3,10 @@ import {
   createSweet,
   listSweets,
   purchaseSweet,
-  restockSweet
+  restockSweet,
+  searchSweets
 } from '../controllers/sweetController';
+
 import { authenticate, authorizeAdmin } from '../middlewares/auth';
 
 
@@ -17,6 +19,7 @@ router.post('/', createSweet);
 router.get('/', listSweets);
 
 // ✅ PURCHASE ROUTE (THIS WAS MISSING / NOT REGISTERED)
+router.get('/search', searchSweets);
 router.post('/:id/purchase', purchaseSweet);
 router.post('/:id/restock', authorizeAdmin, restockSweet);
 

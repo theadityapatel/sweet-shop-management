@@ -62,4 +62,30 @@ export async function restockSweet(req: Request, res: Response) {
 
   res.status(200).json(updated);
 }
+export async function searchSweets(req: Request, res: Response) {
+  const { name, category, minPrice, maxPrice } = req.query;
 
+  const filters: any = {};
+
+  if (name) {
+    filters.name = {
+      contains: String(name)
+    };
+  }
+
+  if (category) {
+    filters.category = String(category);
+  }
+
+  if (minPrice || maxPrice) {
+    filters.price = {};
+    if (minPrice) filters.price.gte = Number(minPrice);
+    if (maxPrice) filters.price.lte = Number(maxPrice);
+  }
+
+  const sweets = await prisma.sweet.findMany({
+    where: filters
+  });
+
+  res.status(200).json(sweets);
+}
